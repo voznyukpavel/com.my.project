@@ -1,33 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
- <modelVersion>4.0.0</modelVersion>
- <parent>
-  <groupId>com.my</groupId>
-  <artifactId>com.my.project.osgi.pom</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <relativePath>../pom/com.my.project.osgi.pom</relativePath>
- </parent>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
- <groupId>com.my.project</groupId>
- <artifactId>com.my.project</artifactId>
- <packaging>bundle</packaging>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.my</groupId>
+    <artifactId>com.my.project.parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
 
- <build>
-  <finalName>
-   ${project.artifactId}_${bundle.version}</finalName>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.felix</groupId>
-    <artifactId>maven-bundle-plugin</artifactId>
-    <configuration>
-     <instructions>
-      <Export-Package>
-       com.example.helloworld*;version=${bundle.version},
-      </Export-Package>
-     </instructions>
-    </configuration>
-   </plugin>
-  </plugins>
- </build>
+  <artifactId>com.my.project</artifactId>
+  <packaging>eclipse-plugin</packaging>
 </project>

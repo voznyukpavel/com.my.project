@@ -1,0 +1,6 @@
+<feature id="com.my.project.feature"
+         label="My Project Feature"
+         version="1.0.0.202506242212"
+         provider-name="My Company">
+  <plugin id="com.my.project" version="1.0.0.202506242212" download-size="2" install-size="1" />
+</feature>
