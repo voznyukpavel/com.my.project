@@ -23,7 +23,7 @@
     <configuration>
      <instructions>
       <Export-Package>
-       com.example.helloworld*;version=${project.version},
+       com.example.helloworld*;version=${bundle.version},
       </Export-Package>
      </instructions>
     </configuration>
