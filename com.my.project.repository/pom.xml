@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.my</groupId>
+		<artifactId>com.my.project.parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>com.my.project.repository</artifactId>
+	<packaging>eclipse-repository</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-p2-extras-plugin</artifactId>
+				<version>4.0.3</version>
+				<executions>
+					<execution>
+						<id>create-p2-repository</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>mirror</goal>
+						</goals>
+						<configuration>
+							<source>
+								<repository>
+									<url>file:../com.my.project/target/</url>
+								</repository>
+								<repository>
+									<url>file:../com.my.project.feature/target/</url>
+								</repository>
+							</source>
+							<destination>${project.build.directory}/repository</destination>
+							<includeFeatures>true</includeFeatures>
+							<includeBundles>true</includeBundles>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>2.7.4</version> <!-- use latest stable version -->
+				<extensions>true</extensions>  <!-- this is critical -->
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-maven-plugin</artifactId>
+					<version>2.7.4</version> <!-- use latest stable version -->
+					<extensions>true</extensions>  <!-- this is critical -->
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

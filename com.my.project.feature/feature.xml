@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="com.my.project.feature"
+    label="My Project Feature"
+    version="1.0.0.qualifier"
+    provider-name="com.my">
+
+    <description>
+        Example feature including the com.my.project bundle.
+    </description>
+
+    <plugin
+        id="com.my.project"
+        download-size="0"
+        install-size="0"
+        version="0.0.0"
+        unpack="false" />
+</feature>

@@ -7,10 +7,40 @@
 	<artifactId>com.my.project.parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
+	<scm>
+		<connection>scm:git:https://github.com/voznyukpavel/com.my.project</connection>
+		<developerConnection>
+			scm:git:https://github.com/voznyukpavel/com.my.project</developerConnection>
+		<url>https://github.com/voznyukpavel/com.my.project</url>
+	</scm>
+
 	<modules>
-		<module>pom</module>
 		<module>com.my.project</module>
+		<module>com.my.project.feature</module>
+		<module>com.my.project.repository</module>
+		<module>pom/com.my.project.osgi.pom</module>
 	</modules>
 
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-maven-plugin</artifactId>
+					<version>2.7.4</version> <!-- or latest stable -->
+					<extensions>true</extensions> <!-- important: enable Tycho
+					packaging types -->
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>2.7.4</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
