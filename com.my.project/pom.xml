@@ -1,33 +1,157 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
- <modelVersion>4.0.0</modelVersion>
- <parent>
-  <groupId>com.my</groupId>
-  <artifactId>com.my.project.osgi.pom</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <relativePath>../pom/com.my.project.osgi.pom</relativePath>
- </parent>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.my</groupId>
+		<artifactId>com.my.project.osgi.pom</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom/com.my.project.osgi.pom</relativePath>
+	</parent>
 
- <groupId>com.my.project</groupId>
- <artifactId>com.my.project</artifactId>
- <packaging>bundle</packaging>
+	<groupId>com.my.project</groupId>
+	<artifactId>com.my.project</artifactId>
+	<packaging>bundle</packaging>
 
- <build>
-  <finalName>
-   ${project.artifactId}_${bundle.version}</finalName>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.felix</groupId>
-    <artifactId>maven-bundle-plugin</artifactId>
-    <configuration>
-     <instructions>
-      <Export-Package>
-       com.example.helloworld*;version=${bundle.version},
-      </Export-Package>
-     </instructions>
-    </configuration>
-   </plugin>
-  </plugins>
- </build>
+	<build>
+		<finalName>
+			${project.artifactId}_${bundle.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							com.example.helloworld*;version=${bundle.version},
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>create-xml-file</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo
+									file="${project.build.directory}/feature.xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+	&lt;feature
+		id="${project.artifactId}"
+		label="${project.artifactId}"
+		version="${bundle.version}"
+		provider-name="my company"&gt;
+		
+	&lt;requires&gt;
+		&lt;import
+			plugin="${project.artifactId}"/&gt;
+	&lt;/requires&gt;
+
+	&lt;plugin
+		id="${project.artifactId}"
+		version="${bundle.version}"/&gt;
+&lt;/feature&gt;
+								</echo>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<id>package-feature-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/assembly/feature-zip.xml</descriptor>
+							</descriptors>
+							<finalName>${project.build.finalName}-feature</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-jars</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<waitfor maxwait="30" maxwaitunit="second"
+									checkevery="1" checkeveryunit="second">
+									<available
+										file="${project.build.directory}/${project.build.finalName}-feature.zip" />
+								</waitfor>
+								<mkdir dir="${project.build.directory}/plugins" />
+								<move
+									file="${project.build.directory}/${project.build.finalName}.jar"
+									todir="${project.build.directory}/plugins" />
+								<mkdir dir="${project.build.directory}/features" />
+								<move
+									file="${project.build.directory}/${project.build.finalName}-feature.zip"
+									tofile="${project.build.directory}/features/${project.artifactId}.feature_${bundle.version}.jar" />
+								<mkdir dir="${project.build.directory}/source" />
+								<move file="${project.build.directory}/plugins"
+									todir="${project.build.directory}/source" />
+								<move file="${project.build.directory}/features"
+									todir="${project.build.directory}/source" />
+								<mkdir
+									dir="${project.build.directory}/repository" />
+								<waitfor maxwait="30" maxwaitunit="second"
+									checkevery="1" checkeveryunit="second">
+                                    <available file="${project.build.directory}/repository"/>
+                                </waitfor>	
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-p2-extras-plugin</artifactId>
+				<version>${tychoVersion}</version>
+				<executions>
+					<!-- Generate metadata -->
+					<execution>
+						<id>generate-full-metadata</id>
+						<phase>install</phase>
+						<goals>
+							<goal>publish-features-and-bundles</goal>
+						</goals>
+						<configuration>
+							<artifactRepositoryLocation>
+								${project.build.directory}/repository</artifactRepositoryLocation>
+							<metadataRepositoryLocation>
+								${project.build.directory}/repository</metadataRepositoryLocation>
+							<sourceLocation>${project.build.directory}/source</sourceLocation>
+							<append>true</append>
+							<publishArtifacts>true</publishArtifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
