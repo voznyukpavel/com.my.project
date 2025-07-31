@@ -72,7 +72,7 @@
 				<executions>
 					<execution>
 						<id>package-feature-zip</id>
-						<phase>package</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
